@@ -21,7 +21,8 @@ export default new Vuex.Store({
         roles: val.roles,
         tagsList: val.tagsList,
         lang:val.lang,
-        breadList:val.breadList
+        breadList:val.breadList,
+        adminUser:val.adminUser
       }
     }
   })]

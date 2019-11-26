@@ -1,0 +1,7 @@
+.el-form-item__label{
+  color: #606266;
+}
+.max-height .el-dialog__body {
+    max-height: 400px;
+    overflow-y: auto;
+}

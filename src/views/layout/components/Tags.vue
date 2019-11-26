@@ -17,14 +17,14 @@
       </ul>
     </scroll-pane>
     <div class="tags-close-box">
-      <el-dropdown @command="handleCommand">
-        <el-button size="mini" type="primary">
+      <el-dropdown @command="handleCommand"> <!-- @command点击菜单项触发的事件回调 -->
+        <div class="lobelOptions" size="mini" type="primary">
           {{$t('header.labelOptions')}}
           <i class="el-icon-arrow-down el-icon--right"></i>
-        </el-button>
+        </div>
         <el-dropdown-menu size="small" slot="dropdown">
+          <!-- command @command回传的函数 -->
           <el-dropdown-item command="closeOther">{{$t('header.closeOthers')}}</el-dropdown-item>
-          <!-- <el-dropdown-item command="all">关闭所有</el-dropdown-item> -->
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -65,7 +65,7 @@ export default {
   methods: {
     //选中的高亮
     isActive(path) {
-      return path === this.$route.fullPath;
+      return path === this.$route.fullPath; // 获取当前路由
     },
     handleCommand(command) {
       if (command == "closeOther") {
@@ -183,6 +183,13 @@ export default {
   background: $base-white;
   box-shadow: -3px 0 15px 3px rgba(0, 0, 0, 0.1);
   z-index: 10;
+  .lobelOptions {
+    color: white;
+    background-color: #bdb7ff;
+    width: 100px;
+    height: 30px;
+    line-height: 30px;
+  }
 }
 </style>
 <style>

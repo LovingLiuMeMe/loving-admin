@@ -5,10 +5,11 @@ import {
 } from "element-ui";
 import {messages} from '../assets/js/common.js'
 import store from '../store/store'
+import qs from 'qs'
 axios.defaults.timeout = 60000;
 axios.defaults.baseURL = process.env.VUE_APP_LOGOUT_URL;
 axios.defaults.headers.post["Content-Type"] =
-    "application/x-www-form-urlencoded;charset=UTF-8";
+    "application/json";
 let loading = null;
 /*
  *请求前拦截
@@ -20,6 +21,7 @@ axios.interceptors.request.use(
             text: "正在加载中......",
             fullscreen: true
         });
+        // JWT 的校验,暂未使用
         if (store.state.token) {
             config.headers["Authorization"] = "Bearer " + store.state.token;
         }
@@ -41,15 +43,20 @@ axios.interceptors.response.use(
                 loading.close();
             }
             const res = response.data;
-            if (res.err_code === 0) {
+            console.log(res)
+            if (res.code === 0 || res.code === 200) {
+                if(res.msg){
+                    messages("success", res.msg);
+                }
                 resolve(res)
             } else{
+                messages("error", res.msg);
                 reject(res)
             }
         })
     },
     error => {
-        console.log(error)
+        console.log('error',error)
         //请求成功后关闭加载框
         if (loading) {
             loading.close();
@@ -126,7 +133,39 @@ export function get(url, params) {
 export function post(url, params) {
     return new Promise((resolve, reject) => {
         axios
-            .post(url, params)
+            .post(url,params)
+            .then(res => {
+                resolve(res);
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
+export function postForm(url, params) {
+    let config = {
+        headers:{'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'}
+    };
+    return new Promise((resolve, reject) => {
+        axios
+            .post(url,
+                qs.stringify(params,{ arrayFormat: 'repeat' }),
+                config)
+            .then(res => {
+                resolve(res);
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
+export function postFile(url, params) {
+    let config = {
+        headers:{'Content-Type':'multipart/form-data'}
+    };
+    return new Promise((resolve, reject) => {
+        axios
+            .post(url,params,config)
             .then(res => {
                 resolve(res);
             })

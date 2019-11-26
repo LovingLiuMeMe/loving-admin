@@ -12,13 +12,16 @@
         router
       >
         <template v-for="item in items">
+          <!-- 一级菜单 -->
           <template v-if="item.subs">
             <el-submenu :index="item.index" :key="item.index">
               <template slot="title">
                 <i :class="item.icon"></i>
                 <span slot="title">{{$t('route.'+item.title) }}</span>
               </template>
+              <!-- 二级菜单 -->
               <template v-for="subItem in item.subs">
+              <!-- 三级菜单 -->
                 <el-submenu v-if="subItem.subs" :index="subItem.index" :key="subItem.index">
                   <template slot="title">
                     <i :class="subItem.icon"></i>
@@ -28,8 +31,9 @@
                     v-for="(threeItem,i) in subItem.subs"
                     :key="i"
                     :index="threeItem.index"
-                  >{{$t('route.'+threeItem.title) }}</el-menu-item>
+                  >{{$t('route.'+threeItem.title)}}</el-menu-item>
                 </el-submenu>
+
                 <el-menu-item
                   v-else
                   :index="subItem.index"
@@ -71,18 +75,18 @@ export default {
     onRoutes() {
       return this.$route.path.replace("/", "");
     },
-    ...mapState(["isCollapse"]),
+    ...mapState(["isCollapse"]),// 获取isCollapse 判断是否是否收缩菜单栏 
     items() {
       let items = this.filterMenus(menu, this.$store.state.roles);
       return items;
     }
   },
   methods: {
-    handleOpen(key, keyPath) {
-      // console.log(key, keyPath);
+    handleOpen(key, keyPath) { // sub-menu 展开的回调 (index,indexPath)
+      console.log(key, keyPath);
     },
-    handleClose(key, keyPath) {
-      // console.log(key, keyPath);
+    handleClose(key, keyPath) { // sub-menu 关闭的回调 (index,indexPath)
+      console.log(key, keyPath);
     },
     /**
      * 通过meta.role判断是否与当前用户权限匹配
@@ -114,14 +118,14 @@ export default {
       });
       return res;
     },
-    select(index, indexPath) {
+    select(index, indexPath) { // 菜单选中后的回调 （index, indexPath）（父级菜单并不会触发）
       console.log(index, indexPath);
       if (indexPath.indexOf("home") > -1) return;
       if (index!==null) {
         let breadList = ["home"];
         breadList.push(...indexPath);
         console.log(breadList);
-        this.$store.commit("SET_BREAD", breadList);
+        this.$store.commit("SET_BREAD", breadList); // 将点击的路由添加到vuex中 面包屑导航所用
       }
     }
   }

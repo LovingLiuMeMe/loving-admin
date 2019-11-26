@@ -22,6 +22,15 @@ const mutations = {
     },
     SET_BREAD(state,breadList){
         state.breadList=breadList
+    },
+    // 添加用户信息
+    SET_ADMININFO(state,adminUser){
+        state.adminUser = adminUser
+        state.isLogin = true
+    },
+    DELETE_ADMININFO(state){
+        state.adminUser = {}
+        state.isLogin = false
     }
 }
 export default mutations

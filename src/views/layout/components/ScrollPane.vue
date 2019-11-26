@@ -1,3 +1,4 @@
+<!-- 打开路由的容器 -->
 <template>
   <el-scrollbar ref="scrollContainer" :vertical="false" class="scroll-container" @wheel.native.prevent="handleScroll">
     <slot />

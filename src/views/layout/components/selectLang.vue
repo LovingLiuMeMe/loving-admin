@@ -1,3 +1,4 @@
+<!-- 语言切换下拉按钮 -->
 <template>
   <div>
       <el-dropdown trigger="click" @command="handleSetLanguage">

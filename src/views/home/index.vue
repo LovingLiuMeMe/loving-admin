@@ -1,6 +1,8 @@
 <template>
   <div class="home">
+    <!-- 主页信息 第一个层级-->
     <el-row :gutter="40">
+      <!-- 首页用户数量 -->
       <el-col :lg="6" :sm="12">
         <div class="grid-content bg-white">
           <el-row>
@@ -24,6 +26,7 @@
           </el-row>
         </div>
       </el-col>
+      <!-- 首页消息数量 -->
       <el-col :lg="6" :sm="12">
         <div class="grid-content bg-white">
           <el-row>
@@ -47,6 +50,7 @@
           </el-row>
         </div>
       </el-col>
+      <!-- 首页留言数量 -->
       <el-col :lg="6" :sm="12">
         <div class="grid-content bg-white">
           <el-row>
@@ -70,6 +74,7 @@
           </el-row>
         </div>
       </el-col>
+      <!-- 首页访问数量 -->
       <el-col :lg="6" :sm="12">
         <div class="grid-content bg-white">
           <el-row>
@@ -94,51 +99,34 @@
         </div>
       </el-col>
     </el-row>
+
+    <!-- 主页信息 第二个层级-->
     <el-row :gutter="40">
-      <el-col :lg="5" :sm="8" :xs="24">
+      <!-- 主页信息 开发者信息 -->
+      <el-col :lg="8" :sm="8" :xs="24">
         <div class="main-center clearfix">
           <div class="pull-left center-left">
             <ul>
               <li class="accout">我的账户</li>
               <li class="tou">
-                <img src="../../assets/img/tou.jpg">
+                <img src="../../assets/img/logo.png">
                 <br>
                 <span>
-                  zyh
+                  LovingLiu
                   <br>
-                  <span>超级管理员</span>
+                  <span>管理员</span>
                 </span>
               </li>
-              <li class="mobile">手机号：18111111111</li>
-              <!-- <li class="username">用户名：zyh</li> -->
+              <li class="mobile">邮箱：lovingliu@126.com</li>
+              <li class="mobile">QQ：3230644615</li>
               <li class="time">系统版本：1.0.0</li>
-              <li class="time">天气：晴</li>
-              <li class="time">当前时间：2019-03-05</li>
-              <li class="time">上次登陆：2019-03-05</li>
             </ul>
           </div>
         </div>
       </el-col>
-      <el-col :lg="19" :sm="16" :xs="24">
+      <!-- 主页信息 表格信息 -->
+      <el-col :lg="16" :sm="16" :xs="24">
         <div id="charts" ref="charts"></div>
-      </el-col>
-    </el-row>
-    <el-row :gutter="40">
-      <el-col :lg="12">
-        <el-table :data="tableData" style="width: 100%" class="users">
-          <el-table-column prop="name" label="用户名" width="180"></el-table-column>
-          <el-table-column prop="date" label="日期" width="180"></el-table-column>
-          <el-table-column prop="address" label="地址"></el-table-column>
-        </el-table>
-      </el-col>
-      <el-col :lg="12">
-        <div class="todulist">
-          <div class="item" v-for="(item,i) in todulist" :key="i" @click="toDo(item,i)">
-            <!-- <input type="checkbox" :checked="item.checked" class="ipcont"> -->
-            <el-checkbox v-model="item.checked"></el-checkbox>
-            <span :class="item.checked?'done':''">{{item.todo}}</span>
-          </div>
-        </div>
       </el-col>
     </el-row>
   </div>
@@ -155,30 +143,8 @@ export default {
     return {
       user: {
         startVal: 0,
-        endVal: 10951
+        endVal: 2019
       },
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
-      ],
       todulist: [
         {
           checked: true,
@@ -200,12 +166,14 @@ export default {
           checked: true,
           todo: "打篮球"
         }
-      ]
+      ],
+      websock: {}
     };
   },
   mounted() {
-    this.drawChart();
-    this.init();
+    this.drawChart()
+    this.init()
+    this.initWebSocket()
   },
   destroyed(){
     window.onresize=null
@@ -265,6 +233,37 @@ export default {
     },
     toDo(item, i) {
       this.$set(this.todulist[i], "checked", item.checked ? false : true);
+    },
+    /**
+     *  websocket 
+     */
+    initWebSocket(){ //初始化weosocket 直连
+      const wsuri = `ws://127.0.0.1:8000/lovingmall/websocket/${this.$store.state.adminUser.adminUserId}`
+      this.websock = new WebSocket(wsuri)
+      this.websock.onmessage = this.websocketonmessage
+      this.websock.onopen = this.websocketonopen
+      this.websock.onerror = this.websocketonerror
+      this.websock.onclose = this.websocketclose
+    },
+    websocketonopen(){ //连接建立之后执行send方法发送数据
+      console.log('websocket 链接成功');
+    },
+    websocketonerror(){//连接建立失败重连
+      this.initWebSocket()
+    },
+    websocketonmessage(e){
+      let _this = this //数据接收
+      this.$notify({
+        title: '通知',
+        message: e.data,
+        type: 'success'
+      });
+    },
+    websocketsend(Data){//数据发送
+      this.websock.send(Data)
+    },
+    websocketclose(e){  //关闭
+      console.log('断开连接', e)
     }
   }
 };
@@ -369,7 +368,6 @@ export default {
     .tou {
       margin-bottom: 20px;
       img {
-        width: 85px;
         height: 85px;
         border-radius: 50%;
       }
@@ -394,22 +392,6 @@ export default {
   }
   .users {
     margin-top: 20px;
-  }
-  .todulist {
-    background: $base-white;
-    margin-top: 20px;
-    .item {
-      line-height: 46px;
-      border-bottom: 1px solid #ededed;
-      text-align: left;
-      padding-left: 40px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .done {
-      text-decoration: line-through;
-      color: gray;
-    }
   }
 }
 </style>

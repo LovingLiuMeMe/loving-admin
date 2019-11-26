@@ -3,10 +3,12 @@ import Router from 'vue-router'
 import store from '../store/store'
 import NProgress from 'nprogress' //进度条
 import 'nprogress/nprogress.css'
+
 Vue.use(Router)
     // 路由懒加载
 const getComponent = (name, component) => () =>
     import (`@/views/${name}/${component}.vue`);
+
 const myRouter = new Router({
     routes: [{
             path: '/login',
@@ -20,89 +22,12 @@ const myRouter = new Router({
         },
         {
             path: '/home',
-            component: getComponent('layout', 'Layout'),
+            component: getComponent('layout', 'Layout'),// 使用布局的关键点
             children: [{
                     path: '/home',
                     component: getComponent('home', 'index'),
                     meta: {
                         title: 'home'
-                    }
-                },
-                {
-                    path: '/element',
-                    component: getComponent('icons', 'elementIcom'),
-                    meta: {
-                        title: 'element'
-                    }
-                },
-                {
-                    path: '/iconfont',
-                    component: getComponent('icons', 'iconfont'),
-                    meta: {
-                        title: 'iconfont'
-                    }
-                },
-                {
-                    path: '/editor',
-                    component: getComponent('component', 'editor'),
-                    meta: {
-                        title: 'editor'
-                    }
-                },
-                {
-                    path: '/countTo',
-                    component: getComponent('component', 'countTo'),
-                    meta: {
-                        title: 'countTo'
-                    }
-                },
-                {
-                    path: '/customTree',
-                    component: getComponent('component', 'tree'),
-                    meta: {
-                        title: 'customTree'
-                    }
-                },
-                {
-                    path: '/treeTable',
-                    component: getComponent('component', 'treeTable'),
-                    meta: {
-                        title: 'treeTable'
-                    }
-                },
-                {
-                    path: '/treeSelect',
-                    component: getComponent('component', 'treeSelect'),
-                    meta: {
-                        title: 'treeSelect'
-                    }
-                },
-                {
-                    path: '/draglist',
-                    component: getComponent('draggable', 'draglist'),
-                    meta: {
-                        title: 'draglist'
-                    }
-                },
-                {
-                    path: '/dragtable',
-                    component: getComponent('draggable', 'dragtable'),
-                    meta: {
-                        title: 'dragtable'
-                    }
-                },
-                {
-                    path: '/cricle',
-                    component: getComponent('charts', 'cricle'),
-                    meta: {
-                        title: 'cricle'
-                    }
-                },
-                {
-                    path: '/formDesign',
-                    component: getComponent('formDesign', 'index'),
-                    meta: {
-                        title: 'formDesign'
                     }
                 },
                 {
@@ -133,24 +58,90 @@ const myRouter = new Router({
                     meta: {
                         title: '403'
                     }
+                },
+                // ++ 
+                {
+                    path: '/productlist',
+                    component: getComponent('product', 'List'),
+                    meta: {
+                        title: 'productlist'
+                    }
+                },
+                {
+                    path: '/productinfo',
+                    component: getComponent('product', 'Info'),
+                    meta: {
+                        title: 'productinfo'
+                    }
+                },
+                {
+                    path: '/orderlist',
+                    component: getComponent('order', 'List'),
+                    meta: {
+                        title: 'orderlist'
+                    }
+                },
+                {
+                    path: '/orderinfo',
+                    component: getComponent('order', 'Info'),
+                    meta: {
+                        title: 'orderinfo'
+                    }
+                },
+                {
+                    path: '/activityManage',
+                    component: getComponent('activity', 'Manage'),
+                    meta: {
+                        title: 'activityManage'
+                    }
+                },
+                {
+                    path: '/indexSwipperManage',
+                    component: getComponent('index', 'SwipperManage'),
+                    meta: {
+                        title: 'indexSwipperManage'
+                    }
+                },
+                {
+                    path: '/indexWelcomeManage',
+                    component: getComponent('index', 'WelcomeManage'),
+                    meta: {
+                        title: 'indexWelcomeManage'
+                    }
+                },              
+                {
+                    path: '/userList',
+                    component: getComponent('user', 'List'),
+                    meta: {
+                        title: 'userList'
+                    }
                 }
             ]
         }, {
-            path: '*',
+            path: '*', // 当路由不存在的时候 就会跳转到此处
             redirect: '/404',
         }
     ]
 })
 
-//判断是否存在token
+// 添加路由守卫 
 myRouter.beforeEach((to, from, next) => {
     NProgress.start()
-    if (to.path !== '/login' && !store.state.token) {
+    // 判断是否登录【JWT的形式】
+    // if (to.path !== '/login' && !store.state.token) {
+    //     next('/login')
+    //     NProgress.done() // 结束Progress
+    // } else {
+    //     next();
+    // }
+    // 判断是否登录【vuex】
+    if (to.path !== '/login' && !store.state.isLogin) {
         next('/login')
         NProgress.done() // 结束Progress
     } else {
         next();
     }
+    // 判断是否有权限
     if (to.meta.roles) {
         to.meta.roles.includes(...store.getters.roles) ? next() : next('/404')
     } else {

@@ -1,3 +1,4 @@
+<!-- 控制菜单栏是否收缩 -->
 <template>
   <div class="clearfix">
     <div class="showAside pull-left" @click="toggleClick">
@@ -8,10 +9,9 @@
 <script>
 export default {
   name: "showAside",
-  props: {
-    toggleClick: {
-      type: Function,
-      default: null
+  methods:{
+    toggleClick() {
+      this.$emit("toggleClick")
     }
   }
 };

@@ -14,17 +14,15 @@
             class="login-ruleForm"
           >
             <el-form-item :label="$t('login.username')" prop="username">
-              <el-input v-model="ruleForm2.username"></el-input>
+              <el-input v-model="ruleForm2.loginUserName"></el-input>
             </el-form-item>
             <el-form-item :label="$t('login.password')" prop="password">
-              <el-input type="password" v-model="ruleForm2.password" autocomplete="off" show-password></el-input>
+              <el-input type="password" v-model="ruleForm2.loginPassword" autocomplete="off" show-password></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm2')">提交</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm2')">登录</el-button>
               <el-button @click="resetForm('ruleForm2')">重置</el-button>
             </el-form-item>
-            <div class='acount'><span>{{$t('login.username')}}</span>：admin&nbsp;&nbsp;<span>{{$t('login.password')}}</span>:any</div>
-            <div class='acount'><span>{{$t('login.username')}}</span>：user&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>{{$t('login.password')}}</span>:any</div>
           </el-form>
       </el-col>
     </el-row>
@@ -33,8 +31,9 @@
   </div>
 </template>
 <script>
-import { login } from "@api";
-import { messages } from "@assets/js/common.js";
+import { login } from "@api"
+import { messages } from "@assets/js/common.js"
+import { getCookie } from '@/util'
 export default {
   name: "login",
   data() {
@@ -43,7 +42,7 @@ export default {
         callback(new Error("请输入密码"));
       } else {
         if (this.ruleForm2.checkPass !== "") {
-          this.$refs.ruleForm2.validateField("checkPass");
+          this.$refs.ruleForm2.validateField("checkPass"); // 2.自定义规则checkPass 校验通过
         }
         callback();
       }
@@ -57,46 +56,76 @@ export default {
     };
     return {
       ruleForm2: {
-        password: "admin",
-        username: "admin"
+        loginPassword: "admin",
+        loginUserName: "admin"
       },
-      rules2: {
+      rules2: { // 1.定义表单验证的规则 validator 自定义验证规则
         password: [{ validator: validatePass, trigger: "blur" }],
         username: [{ validator: validateName, trigger: "blur" }]
       }
     };
   },
+  mounted() {
+    const cookieName = 'lovingAdmin'
+    let cookieValue = getCookie(cookieName)
+    if(cookieValue) {
+      let adminInfoStr = sessionStorage.getItem('LOVING_MALL_ADMININFO')
+      console.log('adminInfoStr', adminInfoStr)
+      if(adminInfoStr){
+        let adminInfo = JSON.parse(adminInfoStr)
+        this.$store.commit("COMMIT_TOKEN", 'TestToken');
+        //【管理员权限,暂未使用】
+        this.$store.commit("COMMIT_ROLE", ['admin']);
+        // 1.vuex中保存登录信息
+        this.$store.dispatch('SET_ADMININFO',adminInfo)
+
+        this.$router.push({
+          path: "/home"
+        })
+        messages('success',"检测到您已经登录,自动登录")
+      }else {
+        this.$router.push({
+          path: "/login"
+        })
+      }
+    }else {
+      this.$router.push({
+        path: "/login"
+      })
+    }
+  },
   methods: {
      submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          //这里模拟管理员以及用户两种权限,一般的都是登陆后接口传过来
-          let roles=[]
-          roles.push(this.ruleForm2.username)
-          this.$store.commit("COMMIT_ROLE", roles);
-          this.$router.push({
+          //  实际情况请求后台拿到用户角色
+          login(this.ruleForm2)
+            .then(res => {
+              console.log(res)
+              //【JWT 的校验,暂未使用】
+              this.$store.commit("COMMIT_TOKEN", 'TestToken');
+              //【管理员权限,暂未使用】
+              this.$store.commit("COMMIT_ROLE", ['admin']);
+              // 1.vuex中保存登录信息
+              this.$store.dispatch('SET_ADMININFO',res.data)
+              // 2.同步到SessionLocalStrage
+              sessionStorage.setItem('LOVING_MALL_ADMININFO',JSON.stringify(res.data))
+              // 3.路由跳转
+              this.$message('success',res.message)
+              this.$router.push({
                 path: "/home"
               });
-          // login(this.ruleForm2)
-          //   .then(res => {
-          //     console.log(res)
-          //     //提交数据到vuex
-          //     this.$store.commit("COMMIT_TOKEN", res);
-          //     this.$message('success',res.message)
-          //     this.$router.push({
-          //       path: "/"
-          //     });
-          //   })
-          //   .catch(err => {
-          //     this.$message("error", err.message);
-          //   });
+            })
+            .catch(err => {
+              this.$message("error", err.message);
+            });
         } else {
           return false;
         }
       });
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields();// 对整个表单进行重置，将所有字段值重置为初始值并移除校验结果
     }
   }
 };

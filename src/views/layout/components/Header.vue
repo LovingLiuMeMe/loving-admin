@@ -1,7 +1,7 @@
 <template>
   <div class="head-container clearfix">
     <div class="header-left">
-      <showAside :toggle-click="toggleClick"/>
+      <showAside @toggleClick="toggleAside"/>
       <breadcrumb />
     </div>
     
@@ -28,10 +28,10 @@
         <el-dropdown class="avatar-container" trigger="click">
           <div class="avatar-wrapper">
             <img
-              src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3266090804,66355162&fm=26&gp=0.jpg"
+              src="http://img.lovingliu.cn/default.jpg"
               class="user-avatar"
             >
-            {{username }}<i class="el-icon-caret-bottom"/>
+            {{ username }}<i class="el-icon-caret-bottom"/>
           </div>
           <el-dropdown-menu slot="dropdown" class="user-dropdown">
             <router-link class="inlineBlock" to="/home">
@@ -48,9 +48,10 @@
   </div>
 </template>
 <script>
-import showAside from "./showAside";
+import showAside from "./showAside"
 import selectLang from './selectLang'
 import breadcrumb from './Breadcrumb'
+import { logout } from '@api'
 export default {
   // name:'header',
   components: {
@@ -61,10 +62,9 @@ export default {
   data() {
     return {
       fullscreen: false,
-      name: "linxin",
       message: 2,
-      username: "zyh"
-    };
+      username: this.$store.state.adminUser.nickName
+    }
   },
   computed: {
     isCollapse: {
@@ -77,15 +77,32 @@ export default {
     }
   },
   methods: {
-    toggleClick() {
+    toggleAside() {
       this.isCollapse = !this.isCollapse;
     },
     // 用户名下拉菜单选择事件
     logout(command) {
-      this.$store.commit('TAGES_LIST',[])
-      this.$store.commit('SET_BREAD',['home'])
-      this.$router.push("/login");
+      logout()
+        .then(res => {
+          if(res.data.code === 0 || res.data.code === 0 ){
+            // 设置tag列表
+            this.$store.commit('TAGES_LIST',[])
+            // 设置面包屑导航
+            this.$store.commit('SET_BREAD',['home'])
+            // 删除vuex中的登录用户数据
+            this.$store.dispatch('DELETE_ADMININFO')
+            // 删除sessionLocal 中的登录用户数据
+            sessionStorage.removeItem('LOVING_MALL_ADMININFO')
+            this.$router.push("/login");            
+          }else {
+            this.$message("error", res.data.msg);
+          }
+        })
+        .catch(err => {
+          this.$message("error", err.message);
+        });
     },
+
     // 全屏事件
     handleFullScreen() {
       let element = document.documentElement;

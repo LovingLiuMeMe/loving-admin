@@ -1,6 +1,7 @@
 <template>
   <div class="breadcrumb">
     <el-breadcrumb separator="/">
+      <!-- vue多元素过度动画 -->
       <transition-group name="fade-transform" mode='out-in'>
         <template v-for="(item,index) in $store.state.breadList">
           <el-breadcrumb-item

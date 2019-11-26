@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import store from '@/store/store'
- Vue.directive('allowed', {
+// 自定义指令 使得部分组件可见
+Vue.directive('allowed', {
     inserted: function (el, bingding) {
         let roles = store.getters.roles
         //判断权限
