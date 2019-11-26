@@ -6,7 +6,7 @@
           <el-upload
             class="upload-demo"
             name="uploadFile"
-            action="http://127.0.0.1:8888/lovingmall/adminGoods/imageUpload"
+            :action="imageUploadUrl"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
             :before-remove="beforeRemove"
@@ -45,7 +45,8 @@
     },
     data() {
       return {
-        imageList: this.fileList
+        imageList: this.fileList,
+        imageUploadUrl: 'http://admin.lovingliu.cn/lovingmall/adminGoods/imageUpload'
       }
     },
     methods: {

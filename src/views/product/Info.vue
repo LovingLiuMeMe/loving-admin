@@ -41,7 +41,7 @@
         <el-upload
           class="avatar-uploader"
           name="uploadFile"
-          action="http://127.0.0.1:8888/lovingmall/adminGoods/imageUpload"
+          :action="imageUploadUrl"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
@@ -94,7 +94,8 @@ export default {
       },
       oldImages:[],
       categoryList:[],
-      categoryName:''
+      categoryName:'',
+      imageUploadUrl: 'http://admin.lovingliu.cn/lovingmall/adminGoods/imageUpload'
     }
   },
   created(){
