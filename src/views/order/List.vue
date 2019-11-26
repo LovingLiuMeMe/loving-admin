@@ -126,7 +126,7 @@ export default {
         this.totalPage = res.data.totalPage;
 
       }).catch(err => {
-        this.$message("error", err.message);
+        console.log("获得订单列表异常");
       })
     }
   },

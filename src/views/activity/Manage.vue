@@ -152,10 +152,10 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             post("adminActivityController/saveActivity",this.activity).then(res => {
-              this.$message("success", res.msg)
+              console.log('保存活动成功',res)
               this.getActivityList()
             }).catch(err => {
-              this.$message("error", err.message)
+              console.log('保存活动异常',err)
             })
           } else {
             this.$message("error", "请正确的输入活动的名称和排序权重")
@@ -172,9 +172,9 @@
       getActivityList(){
         get("adminActivityController/activityList").then(res => {
           this.activityList = res.data
-          console.log(this.activityList)
+          console.log('获取活动列表成功',this.activityList)
         }).catch(error => {
-          this.$message('error',error.message)
+          console.log(error)
         })
       },
       // 获取商品信息
@@ -182,7 +182,7 @@
         get("adminGoods/listAll").then(res => {
           this.goodsInfoList = res.data
         }).catch(error => {
-          this.$message('error',error.message)
+          console.log(error)
         })
       },
       // 商品选择框 选择的商品
@@ -201,7 +201,7 @@
         get("adminActivityController/deleteActivityItem",{activityItemId}).then(res =>{
           this.getActivityList();
         }).catch(error => {
-          this.$message('error', error.message)
+          console.log(error)
         })
       },
       // 添加商品列表
@@ -216,7 +216,7 @@
         post("adminActivityController/addActivityItems",activityItemList).then(res =>{
           this.getActivityList();
         }).catch(error => {
-          this.$message('error', error.message)
+          console.log('添加商品异常',error)
         })
         this.dialogTableVisible = !this.dialogTableVisible;
       },
@@ -225,7 +225,7 @@
         get("adminActivityController/deleteActivity",{activityId}).then(res =>{
           this.getActivityList();
         }).catch(error => {
-          this.$message('error', error.message)
+          console.log('删除活动异常',error)
         })
       }
     }

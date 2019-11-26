@@ -55,12 +55,12 @@ export default {
       }
       saveWelcome(obj).then(res => {
         if(res.code === 0 || res.code === 200){
-          this.$message("success", res.msg)
+          console.log("创建欢迎页成功")
         }else {
-          this.$message("error", res.msg)
+          console.log("创建欢迎页面失败", res.msg)
         }
       }).catch(err => {
-        this.$message("error", err.message)
+        console.log("error", err)
       })
     },
     /**

@@ -63,12 +63,12 @@ export default {
       }
       saveSwipper(obj).then(res => {
         if(res.code === 0 || res.code === 200){
-          this.$message("success", res.msg)
+          console.log("创建轮播图成功")
         }else {
-          this.$message("error", res.msg)
+          console.log("创建轮播图异常",res.msg)
         }
       }).catch(err => {
-        this.$message("error", err.message)
+        console.log("创建轮播图异常",err)
       })
     },
     /**

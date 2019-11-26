@@ -132,12 +132,12 @@ export default {
         orderType: this.orderType,
         search: this.search
       }).then(res => {
-        this.productList = res.data.list;
-        this.total = res.data.total;
-        this.totalPage = res.data.totalPage;
-
+        this.productList = res.data.list
+        this.total = res.data.total
+        this.totalPage = res.data.totalPage
+        console.log('获得商品列表成功', res)
       }).catch(err => {
-        this.$message("error", err.message);
+        console.log("获得商品列表异常", err)
       })
     }
   },

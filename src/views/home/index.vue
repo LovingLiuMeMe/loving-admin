@@ -229,16 +229,16 @@ export default {
         ]
       };
       // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option);
+      myChart.setOption(option)
     },
     toDo(item, i) {
-      this.$set(this.todulist[i], "checked", item.checked ? false : true);
+      this.$set(this.todulist[i], "checked", item.checked ? false : true)
     },
     /**
      *  websocket 
      */
     initWebSocket(){ //初始化weosocket 直连
-      const wsuri = `ws://127.0.0.1:8000/lovingmall/websocket/${this.$store.state.adminUser.adminUserId}`
+      const wsuri = `ws://49.235.110.134:8000/lovingmall/websocket/${this.$store.state.adminUser.adminUserId}`
       this.websock = new WebSocket(wsuri)
       this.websock.onmessage = this.websocketonmessage
       this.websock.onopen = this.websocketonopen
@@ -246,7 +246,7 @@ export default {
       this.websock.onclose = this.websocketclose
     },
     websocketonopen(){ //连接建立之后执行send方法发送数据
-      console.log('websocket 链接成功');
+      console.log('websocket 链接成功')
     },
     websocketonerror(){//连接建立失败重连
       this.initWebSocket()

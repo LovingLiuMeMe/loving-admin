@@ -111,13 +111,12 @@ export default {
               // 2.同步到SessionLocalStrage
               sessionStorage.setItem('LOVING_MALL_ADMININFO',JSON.stringify(res.data))
               // 3.路由跳转
-              this.$message('success',res.message)
               this.$router.push({
                 path: "/home"
               });
             })
             .catch(err => {
-              this.$message("error", err.message);
+              console.log("登录异常", err);
             });
         } else {
           return false;

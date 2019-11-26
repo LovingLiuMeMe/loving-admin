@@ -95,11 +95,11 @@ export default {
             sessionStorage.removeItem('LOVING_MALL_ADMININFO')
             this.$router.push("/login");            
           }else {
-            this.$message("error", res.data.msg);
+            console.log("退出登录失败", res);
           }
         })
         .catch(err => {
-          this.$message("error", err.message);
+          console.log("退出登录异常", err);
         });
     },
 

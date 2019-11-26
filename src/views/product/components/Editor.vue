@@ -6,7 +6,7 @@
   </div>
 </template>
 <script>
-  import { upload,del } from "@/api/api.js";
+  import { upload,del } from "@/api/api.js"
   export default {
     props: {
       goodsDetailContent: {
@@ -62,27 +62,30 @@
         imgAdd(pos, file){
           console.log('图片上传')
           // 第一步.将图片上传到服务器.
-          var formdata = new FormData();
-          formdata.append('uploadFile', file);
+          var formdata = new FormData()
+          formdata.append('uploadFile', file)
           upload(formdata)
             .then(res => {
-              let url = res.data.url;
+              let url = res.data.url
               console.log('图片地址',url)
               // $vm 不行
-              this.$refs.md.$img2Url(pos, url);
-              this.$emit('addImg', url);
+              this.$refs.md.$img2Url(pos, url)
+              this.$emit('addImg', url)
             })
-            .catch(e => {});
+            .catch(e => {})
         },
         imgDel(fileName){
           del({fileNames: fileName})
             .then(res => {
-              console.log('图片删除结果',res)
+              console.log('图片删除结果', res)
               if(res.data.success){
-                this.$message("success", res.data.message);
+                console("图片删除成功", res)
               }else{
-                this.$message("error", res.data.message);
+                console.log("图片删除失败", res)
               }
+            })
+            .catch(err => {
+              console.log('图片删除异常', res)
             })
         }
     },

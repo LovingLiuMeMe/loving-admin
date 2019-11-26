@@ -104,7 +104,7 @@ export default {
         console.log('res', res)
         this.userList = res.data
       }).catch(err => {
-        this.$message("error", err.message)
+        console.log("获得用户列表异常", err)
       })
     }
   },
