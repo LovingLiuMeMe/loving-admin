@@ -27,16 +27,6 @@
       </el-col>
     </el-row>
     </div>
-    <el-row :gutter="20">
-      <el-col :lg="6" :sm="10" class="aa">
-        <img src="../../assets/img/beian.png" alt="公安备案">     
-      </el-col>
-      <el-col :lg="6" :sm="10" class="aa">
-        <div style="width:300px;margin:0 auto; padding:20px 0;">
-          <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=51010702001623" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">川公网安备 51010702001623号</p></a>
-        </div>        
-      </el-col>
-    </el-row>
   </div>
 </template>
 <script>
